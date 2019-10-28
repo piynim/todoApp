@@ -17,6 +17,7 @@ class AddTodo extends Component {
     handleSubmit(e){
         e.preventDefault();
         if(this.state.text && this.state.bucket){
+            console.log(this.state);
             this.props.dispatch(addTodo(this.state));
             this.setState({
                 text: '',

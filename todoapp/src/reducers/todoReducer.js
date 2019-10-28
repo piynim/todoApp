@@ -3,29 +3,27 @@ import {
 } from "../actions/actions";
 
 const initialState = {
-    bucket: 'default bucket',
     todos: []
 };
-function todoApp(state = initialState, action){
+function todoApp(state = [], action){
     switch (action.type) {
-        case GET_TODO:
-            return {
-                todos : state.todos
-            };
         case ADD_TODO:
-            return Object.assign({},state,{
-            id: action.id,
-            description: action.text,
-            completed: false,
-            list: action.list
-        });
+            return [
+                ...state,{
+                    id: action.id,
+                    description: action.text,
+                    completed: false,
+                    list: action.bucket
+                }
+            ];
         case EDIT_TODO:
+            console.log(action)
             return state.map(todo =>{
-                return todo.id===action.id? { ...todo, completed: !todo.completed}: todo
+                return todo.id === action.id? { ...todo, completed: !todo.completed}: todo
             });
         case FILTER_BUCKET:
             return  state.filter(todo => {
-                return todo.bucket === action.bucket
+                return todo.list === action.list
             });
         case DELETE_TODO: return state.filter( todo => (todo.id !== action.id));
 

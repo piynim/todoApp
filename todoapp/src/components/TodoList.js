@@ -1,11 +1,16 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Todo from './Todo';
+import {filterBucket} from "../actions/actions";
 
-const TodoList = (todos, toggleTodo) =>{
-    console.log(todos);
+const TodoList = ({todos, dispatch, bucketValue}) =>{
+    useEffect(() => {
+        if(bucketValue && bucketValue !== ''){
+            dispatch(filterBucket(bucketValue))
+        }
+    },[]);
     return (<ul>
-        {todos!==undefined && todos.todos.map(todo=>(
-            <Todo todo={todo} onClick={()=>toggleTodo} />
+        {todos!==undefined && todos.map(todo =>(
+            <Todo key={todo.id} todo={todo} dispatch={dispatch}/>
         ))}
     </ul>)
 };

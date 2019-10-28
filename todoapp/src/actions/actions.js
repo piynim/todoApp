@@ -25,16 +25,16 @@ export function deleteTodo(id){
     }
 }
 
-export function editTodo(index){
+export function editTodo(id){
     return {
         type: EDIT_TODO,
-        index
+        id
     }
 }
 
-export function filterBucket(bucket){
+export function filterBucket(list){
     return {
         type: FILTER_BUCKET,
-        bucket
+        list
     }
 }

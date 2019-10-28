@@ -1,6 +1,6 @@
-import React , {Component} from 'react';
+import React , {Component, useEffect } from 'react';
 import {connect} from 'react-redux';
-import {filterBucket, editTodo, deleteTodo, getTodo} from '../actions/actions';
+import {filterBucket, editTodo, deleteTodo} from '../actions/actions';
 import TodoList from '../components/TodoList';
 import AddTodo from "../components/addTodo";
 
@@ -8,70 +8,69 @@ class TodoListContainer extends Component {
     constructor(props){
         super(props);
         this.state = {
-            bucket: '',
-            bucketList: []
+            bucketList: [],
+            bucketValue: '',
+            reRender: false
         };
-        this.toggleTodo = this.toggleTodo.bind(this);
         this.fetchBucket = this.fetchBucket.bind(this);
-        this.setBucket = this.setBucket.bind(this);
+        this.setBucketValue = this.setBucketValue.bind(this);
+        this.toggleTodoList = this.toggleTodoList.bind(this);
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         this.fetchBucket();
-        this.getTodo();
     }
 
-    getTodo(){
-        const {dispatch} = this.props;
-        dispatch(getTodo());
-    }
-    deleteTodo(id){
-        const {dispatch} = this.props;
-        dispatch(deleteTodo(id));
-    }
+
 
     toggleTodoList(){
         const {dispatch} = this.props;
-        if(this.state.bucket && this.state.bucket !== ''){
-            dispatch(filterBucket(this.state.bucket))
+        if(this.state.bucketValue && this.state.bucketValue !== ''){
+            dispatch(filterBucket(this.state.bucketValue))
         }
-    }
-
-    toggleTodo(id){
-        const {dispatch} = this.props;
-        dispatch(editTodo(id))
     }
 
     fetchBucket(){
         const { todos } = this.props;
         todos.map(todo =>{
-            if(!this.state.bucketList.contains(todo.bucket)){
+            if(this.state.bucketList.indexOf(todo.list) === -1){
                 this.setState({
-                    bucketList: [...this.state.bucketList,todo.bucket]
+                    bucketList: [...this.state.bucketList,todo.list]
                 })
             }
         })
     }
 
-    setBucket(e){
+    setBucketValue(e){
+        console.log(e.target.value);
         if(e.target.value && e.target.value !== ''){
-            this.setState({
-                bucket: e.target.value
-            })
+            const {dispatch} = this.props;
+            if(e.target.value && e.target.value !== ''){
+                dispatch(filterBucket(e.target.value))
+            }
         }
     }
-
     render(){
         return(
             <div>
                 <AddTodo />
-                <TodoList todos={this.props.todos}/>
+                <div>
+                    <select value={this.state.bucketValue} onChange={this.setBucketValue}>
+                        {this.state.bucketList && this.state.bucketList.map((value,key)=>{
+                            return(
+                                <option value={value} key={key}>{value}</option>
+                            )
+                        })
+                        }
+                    </select>
+                </div>
+                <TodoList todos={this.props.todos} bucketValue={this.state.bucketValue} dispatch={this.props.dispatch}/>
             </div>
         )
     }
 }
 const mapStateToProps = state => ({
-    todos: state.todos
+    todos: state.todo
 });
 
 export  default connect(
